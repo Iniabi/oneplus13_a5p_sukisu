@@ -29,7 +29,7 @@ on:
       KERNEL_NAME:
         description: "内核名称修改(中文不行)"
         required: true
-        default: '-By-kuan-FutabaWa'
+        default: '-4k'
       KERNEL_TIME:
        description: "内核构建日期更改(默认为原厂)"
        required: true
@@ -37,7 +37,7 @@ on:
       enable_feature_x:
        description: "是否启用kpm"
        required: false
-       default: false
+       default: true
        type: boolean
       enable_feature_y:
        description: "是否启用lz4kd"
@@ -47,7 +47,7 @@ on:
       enable_feature_z:
        description: "是否添加风驰驱动"
        required: false
-       default: false
+       default: true
        type: boolean
       
        
@@ -98,7 +98,7 @@ jobs:
       - name: Set up SukiSU
         run: |
          cd kernel_workspace/kernel_platform
-         curl -LSs "https://raw.githubusercontent.com/ShirkNeko/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-dev
+         curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-dev
          cd ./KernelSU
          KSU_VERSION=$(expr $(/usr/bin/git rev-list --count main) "+" 10606)
          echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
@@ -116,10 +116,10 @@ jobs:
            cp ../susfs4ksu/kernel_patches/fs/* ./common/fs/
            cp ../susfs4ksu/kernel_patches/include/linux/* ./common/include/linux/
            #lz4k
-           cp -r ../SukiSU_patch/other/zram/lz4k/include/linux/* ./common/include/linux
-           cp -r ../SukiSU_patch/other/zram/lz4k/lib/* ./common/lib
-           cp -r ../SukiSU_patch/other/zram/lz4k/crypto/* ./common/crypto
-           cp -r ../SukiSU_patch/other/zram/lz4k_oplus ./common/lib/
+           #cp -r ../SukiSU_patch/other/zram/lz4k/include/linux/* ./common/include/linux
+           #cp -r ../SukiSU_patch/other/zram/lz4k/lib/* ./common/lib
+           #cp -r ../SukiSU_patch/other/zram/lz4k/crypto/* ./common/crypto
+           #cp -r ../SukiSU_patch/other/zram/lz4k_oplus ./common/lib/
            # Apply patches
            cd ./common
 
@@ -196,8 +196,9 @@ jobs:
         run: |
          cd kernel_workspace/kernel_platform/
          git clone https://github.com/HanKuCha/sched_ext.git
-         cp -r ./sched_ext/* ./common/kernel/sched
          rm -rf ./sched_ext/.git
+         rm -rf ./sched_ext/README.md
+         cp -r ./sched_ext/* ./common/kernel/sched
          cd common/kernel/sched
          
       - name: Set Kernel build timestamp
